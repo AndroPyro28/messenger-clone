@@ -101,7 +101,7 @@ function AuthForm() {
             disabled={loading}
           />
 
-          <Button type="submit" className="w-full">
+          <Button disabled={loading} type="submit" className="w-full">
             
             {(() => {
               
