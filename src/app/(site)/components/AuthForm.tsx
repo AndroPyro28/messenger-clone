@@ -103,6 +103,7 @@ function AuthForm() {
           <Button type="submit" className="w-full">
             
             {(() => {
+              
               if(!loading) return variants === 'LOGIN' ? 'Sign in': 'Register'
 
               return <LoadingSpinner size={30} />
