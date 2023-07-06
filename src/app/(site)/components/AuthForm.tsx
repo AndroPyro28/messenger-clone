@@ -8,6 +8,7 @@ import { BsGithub, BsGoogle } from "react-icons/bs";
 import axios from "axios";
 import LoadingSpinner from "@/components/loader/LoadingSpinner";
 function AuthForm() {
+  
   type variant = "LOGIN" | "REGISTER";
   const [variants, setVariants] = useState<variant>("LOGIN");
   const [loading, setLoading] = useState(false);
