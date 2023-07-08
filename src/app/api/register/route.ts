@@ -23,6 +23,6 @@ export const POST = async (req: Request, res: Response) => {
     return NextResponse.json(user);
   } catch (error) {
     console.error(error, "REGISTRATION ERROR");
-    return new NextResponse("internal error", { status: 500 });
+    return new NextResponse("email is already exist", { status: 400 });
   }
 };

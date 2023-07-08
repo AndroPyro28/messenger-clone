@@ -23,7 +23,8 @@ function Input({
   errors,
   ...rest
 }: InputProps): ReactElement {
-    const id = {...rest}?.id as string;
+  const id = {...rest}?.id as string;
+  console.log(errors)
   return (
     <div>
       <label
@@ -62,6 +63,7 @@ function Input({
            disabled && `opacity-50 cursor-default`
            )}
         />
+        <span className="text-red-500">{errors[id]?.message as string}</span>
       </div>
     </div>
   );

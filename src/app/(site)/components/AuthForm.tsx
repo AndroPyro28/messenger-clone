@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Input from "@/components/inputs/Input";
 import Button from "../../../components/Button";
@@ -7,11 +7,36 @@ import AuthSocialButton from "./AuthSocialButton";
 import { BsGithub, BsGoogle } from "react-icons/bs";
 import axios from "axios";
 import LoadingSpinner from "@/components/loader/LoadingSpinner";
+import { toast } from "react-hot-toast";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+
+const schema = z.object({
+  name: z.string(),
+  email: z
+    .string()
+    .email("this should be an email")
+    .nonempty("email is required"),
+  password: z.string().nonempty("password is required"),
+});
+
+export type FormValues = z.infer<typeof schema> | FieldValues;
+
 function AuthForm() {
-  
   type variant = "LOGIN" | "REGISTER";
   const [variants, setVariants] = useState<variant>("LOGIN");
   const [loading, setLoading] = useState(false);
+  const router = useRouter()
+  const session = useSession();
+
+  useEffect(() => {
+    if(session?.status === 'authenticated') {
+      router.push('/users')
+    }
+
+  }, [session?.status, router])
 
   const toggleVariant = useCallback(() => {
     if (variants === "LOGIN") {
@@ -24,34 +49,65 @@ function AuthForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FieldValues>({
     defaultValues: {
       name: "",
       email: "",
       password: "",
     },
+    resolver: zodResolver(schema),
   });
+
+  const disabled = loading || isSubmitting;
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setLoading(true);
     try {
       if (variants == "REGISTER") {
         await axios.post("/api/register", data);
+        toast.success("Register Success!");
+        const response = await signIn("credentials",data);
       }
       if (variants == "LOGIN") {
+        const response = await signIn("credentials", {
+          ...data,
+          redirect: false,
+        });
+        if (response?.error) {
+          toast.error("invalid credentials");
+        }
+
+        if (response?.ok && !response.error) {
+          toast.success("Logged In!");
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(error.response.data);
     } finally {
       setLoading(false);
     }
   };
 
-  const socialActions = (action: string) => {
+  const socialActions = async (action: string) => {
     setLoading(true);
-  };
 
-  
+    try {
+      const response = await signIn(action, { redirect: false });
+
+      if (response?.error) {
+        toast.error("invalid credentials");
+      }
+
+      if (response?.ok && !response.error) {
+        toast.success("Logged In!");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -76,7 +132,7 @@ function AuthForm() {
               label="Name"
               register={register}
               id="name"
-              disabled={loading}
+              disabled={disabled}
               placeholder="name"
             />
           )}
@@ -88,7 +144,7 @@ function AuthForm() {
             register={register}
             id="email"
             placeholder="email"
-            disabled={loading}
+            disabled={disabled}
           />
 
           <Input
@@ -98,18 +154,16 @@ function AuthForm() {
             register={register}
             id="password"
             placeholder="password"
-            disabled={loading}
+            disabled={disabled}
           />
 
-          <Button disabled={loading} type="submit" className="w-full">
-            
+          <Button disabled={disabled} type="submit" className="w-full">
             {(() => {
-              
-              if(!loading) return variants === 'LOGIN' ? 'Sign in': 'Register'
+              if (!loading)
+                return variants === "LOGIN" ? "Sign in" : "Register";
 
-              return <LoadingSpinner size={30} />
+              return <LoadingSpinner size={20} />;
             })()}
-
           </Button>
         </form>
 
@@ -132,7 +186,7 @@ function AuthForm() {
             />
             <AuthSocialButton
               icon={BsGoogle}
-              onClick={() => socialActions("github")}
+              onClick={() => socialActions("google")}
             />
           </div>
         </div>
