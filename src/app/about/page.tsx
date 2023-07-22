@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { useEffect, useRef, useState } from "react";
 import { ClientToServerEvents, ServerToClientEvents } from "@/types/socket-types";
 import axios from "axios";
+import useStore from "@/zustand";
 
 const inter = Inter({ subsets: ["latin"] });
 

@@ -1,3 +1,4 @@
+"use client"
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 import { HiChat } from "react-icons/hi";
@@ -24,9 +25,10 @@ const useRoutes = () => {
         icon: HiUsers,
         active: pathName === "/users" || !!conversationId,
       },
-      {
+      { 
         label: "Logout",
         href: "/#",
+        icon: HiArrowLeftOnRectangle,
         onClick: () => void signOut(),
       },
     ],
