@@ -1,4 +1,3 @@
-import getCurrentUser from "@/actions/getCurrentUser";
 import authorized from "@/helper/authorized";
 import prismaDB from "@/lib/db";
 import { User } from "@prisma/client";
@@ -54,6 +53,8 @@ export async function POST(req: Request) {
             }
         }
     })
+
+    return NextResponse.json(newMessage);
 
     
   } catch (error) {

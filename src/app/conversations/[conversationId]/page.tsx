@@ -32,7 +32,7 @@ async function ConversationId({ params: { conversationId } }: IParams) {
     <div className="lg:pl-80 h-full">
       <div className="h-screen flex flex-col">
         <Header conversation={conversation} />
-        <Body />
+        <Body initialMessages={messages} />
         <Form />
         </div>
     </div>
