@@ -31,6 +31,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
     } ${data?.image ? "rounded-m p-0" : "rounded-full py-2 px-3"}`
   );
 
+
   return (
     <div className={container}>
       <div className={avatar}>

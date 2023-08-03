@@ -28,6 +28,7 @@ async function ConversationId({ params: { conversationId } }: IParams) {
       </div>
     );
   }
+
   return (
     <div className="lg:pl-80 h-full">
       <div className="h-screen flex flex-col">
