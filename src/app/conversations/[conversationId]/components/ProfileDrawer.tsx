@@ -5,8 +5,9 @@ import useOtherUser from "@/hooks/useOtherUser";
 import { Transition, Dialog } from "@headlessui/react";
 import { Conversation, User } from "@prisma/client";
 import { format } from "date-fns";
-import { Fragment, useMemo } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { IoClose, IoTrash } from "react-icons/io5";
+import { Calendar } from "@/components/ui/calendar"
 type ProfileDrawerProps = {
   data: Conversation & {
     users: User[];
@@ -36,6 +37,8 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
     }
     return "active";
   }, [data]);
+
+  const [date, setDate] = useState<Date | undefined>(new Date())
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog as={"div"} className={"relative z-50"} onClose={onClose}>

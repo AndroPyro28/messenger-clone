@@ -12,6 +12,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import {motion} from 'framer-motion'
 
 const schema = z.object({
   name: z.string(),
@@ -109,6 +110,22 @@ function AuthForm() {
     }
   };
 
+  const titleVariant = {
+    offScreen: {
+      opacity: 0,
+      x:-50,
+    },
+    onScreen: {
+      opacity:1,
+      x:0,
+      transition:{
+        type:'spring',
+        bounce:0.5,
+        duration:2
+      }
+    }
+  }
+
   return (
     <div
       className="mt-8
@@ -136,7 +153,6 @@ function AuthForm() {
               placeholder="name"
             />
           )}
-
           <Input
             errors={errors}
             label="Email"
